@@ -9,8 +9,11 @@ const ServiceCenter: React.FC = () => {
   const customsStatus = useDemoStore((s) => s.customsStatus);
   const monthlyGenerated = useDemoStore((s) => s.monthlyGenerated);
   const invoiceConfirmed = useDemoStore((s) => s.invoiceConfirmed);
+  const invoiceGenerated = useDemoStore((s) => s.invoiceGenerated);
+  const invoicePlanGenerated = useDemoStore((s) => s.invoicePlanGenerated);
   const refundMatched = useDemoStore((s) => s.refundMatched);
   const taxDataGenerated = useDemoStore((s) => s.taxDataGenerated);
+  const declarationFormGenerated = useDemoStore((s) => s.declarationFormGenerated);
 
   const refundRate = refundMatched ? buildRefundData().matchRate : 95;
 
@@ -37,9 +40,9 @@ const ServiceCenter: React.FC = () => {
       id: 'tax',
       title: '税务申报',
       path: '/tax',
-      badge: taxDataGenerated ? '申报数据已生成 ✓' : '本期待申报',
-      badge2: taxDataGenerated ? '查看 →' : '查看 →',
-      color: taxDataGenerated ? '#276749' : '#718096',
+      badge: declarationFormGenerated ? '申报表已生成 ✓' : taxDataGenerated ? '申报数据已生成 ✓' : '本期待申报',
+      badge2: declarationFormGenerated ? '查看申报表 →' : taxDataGenerated ? '生成申报表 →' : '查看 →',
+      color: declarationFormGenerated ? '#276749' : taxDataGenerated ? '#2b6cb0' : '#718096',
       interactive: true,
     },
     {
@@ -55,9 +58,9 @@ const ServiceCenter: React.FC = () => {
       id: 'invoice-forex',
       title: '发票收汇',
       path: '/invoice-forex',
-      badge: invoiceConfirmed ? '已开票 ✓' : '待开票',
-      badge2: '收汇 100% · ' + (invoiceConfirmed ? '发票已开' : '系统演示 →'),
-      color: invoiceConfirmed ? '#276749' : '#2b6cb0',
+      badge: invoiceConfirmed ? '已开票 ✓' : invoiceGenerated ? '已生成发票' : invoicePlanGenerated ? '发票计划已生成' : '待开票',
+      badge2: '收汇 100% · ' + (invoiceConfirmed ? '发票已开' : '查看 →'),
+      color: invoiceConfirmed ? '#276749' : invoiceGenerated ? '#2b6cb0' : '#2b6cb0',
       interactive: true,
     },
     {
@@ -65,7 +68,7 @@ const ServiceCenter: React.FC = () => {
       title: '退税资料匹配',
       path: '/refund',
       badge: refundMatched ? `匹配 ${refundRate}%` : '待智能匹配',
-      badge2: refundMatched ? (refundRate >= 100 ? '完全匹配 ✓' : '部分异常 ⚠') : '系统演示 →',
+      badge2: refundMatched ? (refundRate >= 100 ? '完全匹配 ✓' : '部分异常 ⚠') : '开始匹配 →',
       color: refundMatched ? (refundRate >= 100 ? '#276749' : '#c05621') : '#c05621',
       interactive: true,
     },
@@ -76,7 +79,7 @@ const ServiceCenter: React.FC = () => {
       badge: '5项费用',
       badge2: '查看 →',
       color: '#b7791f',
-      interactive: false,
+      interactive: true,
     },
     {
       id: 'disposal',
@@ -85,7 +88,7 @@ const ServiceCenter: React.FC = () => {
       badge: '1项异常',
       badge2: '查看 →',
       color: '#c53030',
-      interactive: false,
+      interactive: true,
     },
   ];
 
@@ -95,9 +98,10 @@ const ServiceCenter: React.FC = () => {
     borderRadius: 12,
     padding: '24px 20px',
     cursor: 'pointer',
-    transition: 'all 0.2s',
+    transition: 'all 0.2s ease',
     position: 'relative' as const,
     boxShadow: modInteractive ? '0 1px 4px rgba(43,108,176,0.08)' : 'none',
+    transform: 'none',
   });
 
   return (
@@ -121,15 +125,8 @@ const ServiceCenter: React.FC = () => {
             <div
               key={mod.id}
               onClick={() => navigate(mod.path)}
+              className="interactive-card"
               style={getCardStyle(isInteractive)}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)';
-                e.currentTarget.style.borderColor = '#90cdf4';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = isInteractive ? '0 1px 4px rgba(43,108,176,0.08)' : 'none';
-                e.currentTarget.style.borderColor = isInteractive ? '#bed9f7' : '#e2e8f0';
-              }}
             >
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
                 <h3 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: '#1a202c' }}>

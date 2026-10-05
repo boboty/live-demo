@@ -7,6 +7,12 @@ import StatusBadge from '../components/StatusBadge/StatusBadge';
 import DataTable from '../components/DataTable/DataTable';
 import KPICard from '../components/KPI/KPI';
 
+interface DocPreview {
+  key: string;
+  name: string;
+  nameEn: string;
+}
+
 const CustomsDocs: React.FC = () => {
   const navigate = useNavigate();
   const {
@@ -27,16 +33,16 @@ const CustomsDocs: React.FC = () => {
   const [previewDoc, setPreviewDoc] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
 
-  const docsList = [
-    { key: 'sc', name: 'SC 销售合同' },
-    { key: 'inv', name: 'Commercial Invoice' },
-    { key: 'pl', name: 'Packing List' },
-    { key: 'cd', name: '报关单草单' },
-    { key: 'de', name: '报关申报要素' },
+  const docsList: DocPreview[] = [
+    { key: 'sc', name: '销售合同', nameEn: 'Sales Contract' },
+    { key: 'inv', name: '商业发票', nameEn: 'Commercial Invoice' },
+    { key: 'pl', name: '装箱单', nameEn: 'Packing List' },
+    { key: 'cd', name: '报关单', nameEn: 'Customs Declaration' },
+    { key: 'de', name: '申报要素', nameEn: 'Declaration Elements' },
   ];
 
   const columns = [
-    { key: 'skuId', label: 'SKU' },
+    { key: 'skuId', label: 'SKU（商品编码）' },
     { key: 'skuName', label: '商品名称' },
     { key: 'hsCode', label: 'HS编码' },
     { key: 'qty', label: '数量' },
@@ -51,12 +57,12 @@ const CustomsDocs: React.FC = () => {
 
   const handleGenerateDocs = () => {
     setAnimating(true);
-    setAnimText('正在生成单证资料...');
-    setTimeout(() => setAnimText('正在生成 SC 销售合同...'), 300);
-    setTimeout(() => setAnimText('正在生成 Commercial Invoice...'), 600);
-    setTimeout(() => setAnimText('正在生成 Packing List...'), 900);
-    setTimeout(() => setAnimText('正在生成 报关单草单...'), 1200);
-    setTimeout(() => setAnimText('正在生成 报关申报要素...'), 1500);
+    setAnimText('正在生成报关五联单...');
+    setTimeout(() => setAnimText('正在生成 Sales Contract（销售合同）...'), 300);
+    setTimeout(() => setAnimText('正在生成 Commercial Invoice（商业发票）...'), 600);
+    setTimeout(() => setAnimText('正在生成 Packing List（装箱单）...'), 900);
+    setTimeout(() => setAnimText('正在生成 Customs Declaration（报关单）...'), 1200);
+    setTimeout(() => setAnimText('正在生成 Declaration Elements（申报要素）...'), 1500);
     setTimeout(() => {
       setAnimating(false);
       generateCustomsDocs();
@@ -69,7 +75,6 @@ const CustomsDocs: React.FC = () => {
     setTimeout(() => {
       setAnimating(false);
       pushCustoms();
-      // Auto clear after push
       setTimeout(() => {
         simulateClearance();
         setShowResult(true);
@@ -83,20 +88,20 @@ const CustomsDocs: React.FC = () => {
         return (
           <div style={{ fontFamily: 'serif', padding: 20, background: '#fafafa', border: '1px solid #ddd', borderRadius: 4, minHeight: 400 }}>
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
-              <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>SALES CONTRACT</h2>
+              <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Sales Contract（销售合同）</h2>
               <div style={{ fontSize: 12, color: '#666' }}>合同编号：SC-EX20261005001</div>
             </div>
-            <div style={{ marginBottom: 16 }}>
-              <div><strong>卖方：</strong>深圳海拓跨境科技有限公司</div>
-              <div><strong>买方：</strong>HaiTop Technology UK Ltd.</div>
-              <div><strong>合同日期：</strong>2026-10-05</div>
+            <div style={{ marginBottom: 16, fontSize: 12 }}>
+              <div><strong>卖方（Seller）：</strong>深圳海拓跨境科技有限公司</div>
+              <div><strong>买方（Buyer）：</strong>HaiTop Technology UK Ltd.</div>
+              <div><strong>合同日期（Date）：</strong>2026-10-05</div>
             </div>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, marginBottom: 16 }}>
               <thead><tr style={{ background: '#eee' }}>
-                <th style={{ border: '1px solid #ccc', padding: 6 }}>品名</th>
-                <th style={{ border: '1px solid #ccc', padding: 6 }}>数量</th>
-                <th style={{ border: '1px solid #ccc', padding: 6 }}>单价(USD)</th>
-                <th style={{ border: '1px solid #ccc', padding: 6 }}>总价(USD)</th>
+                <th style={{ border: '1px solid #ccc', padding: 6 }}>品名（Description）</th>
+                <th style={{ border: '1px solid #ccc', padding: 6 }}>数量（Qty）</th>
+                <th style={{ border: '1px solid #ccc', padding: 6 }}>单价（Unit Price, USD）</th>
+                <th style={{ border: '1px solid #ccc', padding: 6 }}>总价（Amount, USD）</th>
               </tr></thead>
               <tbody>
                 {items.map((item) => (
@@ -109,15 +114,15 @@ const CustomsDocs: React.FC = () => {
                 ))}
               </tbody>
               <tfoot><tr style={{ fontWeight: 700 }}>
-                <td style={{ border: '1px solid #ccc', padding: 6 }}>合计</td>
+                <td style={{ border: '1px solid #ccc', padding: 6 }}>合计（Total）</td>
                 <td style={{ border: '1px solid #ccc', padding: 6, textAlign: 'right' }}>{totalQty}</td>
                 <td style={{ border: '1px solid #ccc', padding: 6 }}></td>
                 <td style={{ border: '1px solid #ccc', padding: 6, textAlign: 'right' }}>{totalUSD.toFixed(2)}</td>
               </tr></tfoot>
             </table>
-            <div><strong>金额大写：</strong>USD {totalUSD.toFixed(2)}</div>
+            <div style={{ fontSize: 12 }}><strong>金额大写（Amount in Words）：</strong>USD {totalUSD.toFixed(2)}</div>
             <div style={{ marginTop: 12, fontSize: 11, color: '#999' }}>
-              合同条款见附件。本单证仅供演示使用。
+              本单证仅供演示使用。
             </div>
           </div>
         );
@@ -125,21 +130,21 @@ const CustomsDocs: React.FC = () => {
         return (
           <div style={{ fontFamily: 'serif', padding: 20, background: '#fafafa', border: '1px solid #ddd', borderRadius: 4, minHeight: 400 }}>
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
-              <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>COMMERCIAL INVOICE</h2>
+              <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Commercial Invoice（商业发票）</h2>
               <div style={{ fontSize: 12, color: '#666' }}>发票号：INV-EX20261005001</div>
             </div>
             <div style={{ marginBottom: 16, fontSize: 12 }}>
-              <div><strong>Exporter:</strong> Shenzhen HaiTop Cross-border Technology Co., Ltd.</div>
-              <div><strong>Consignee:</strong> HaiTop Technology UK Ltd.</div>
-              <div><strong>Date:</strong> 2026-10-05</div>
+              <div><strong>出口商（Exporter）：</strong> Shenzhen HaiTop Cross-border Technology Co., Ltd.</div>
+              <div><strong>收货人（Consignee）：</strong> HaiTop Technology UK Ltd.</div>
+              <div><strong>日期（Date）：</strong> 2026-10-05</div>
             </div>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, marginBottom: 16 }}>
               <thead><tr style={{ background: '#eee' }}>
-                <th style={{ border: '1px solid #ccc', padding: 6 }}>HS Code</th>
-                <th style={{ border: '1px solid #ccc', padding: 6 }}>Description</th>
-                <th style={{ border: '1px solid #ccc', padding: 6 }}>Qty</th>
-                <th style={{ border: '1px solid #ccc', padding: 6 }}>Unit Price</th>
-                <th style={{ border: '1px solid #ccc', padding: 6 }}>Amount</th>
+                <th style={{ border: '1px solid #ccc', padding: 6 }}>HS编码（HS Code）</th>
+                <th style={{ border: '1px solid #ccc', padding: 6 }}>品名（Description）</th>
+                <th style={{ border: '1px solid #ccc', padding: 6 }}>数量（Qty）</th>
+                <th style={{ border: '1px solid #ccc', padding: 6 }}>单价（Unit Price, USD）</th>
+                <th style={{ border: '1px solid #ccc', padding: 6 }}>金额（Amount, USD）</th>
               </tr></thead>
               <tbody>
                 {items.map((item) => (
@@ -153,25 +158,27 @@ const CustomsDocs: React.FC = () => {
                 ))}
               </tbody>
             </table>
-            <div style={{ fontSize: 12 }}><strong>Total Amount:</strong> USD {totalUSD.toFixed(2)}</div>
+            <div style={{ fontSize: 12 }}>
+              <strong>总金额（Total Amount）：</strong> USD {totalUSD.toFixed(2)}
+            </div>
           </div>
         );
       case 'pl':
         return (
           <div style={{ fontFamily: 'serif', padding: 20, background: '#fafafa', border: '1px solid #ddd', borderRadius: 4, minHeight: 400 }}>
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
-              <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>PACKING LIST</h2>
+              <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Packing List（装箱单）</h2>
               <div style={{ fontSize: 12, color: '#666' }}>装箱单号：PL-EX20261005001</div>
             </div>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, marginBottom: 16 }}>
               <thead><tr style={{ background: '#eee' }}>
-                <th style={{ border: '1px solid #ccc', padding: 6 }}>SKU</th>
-                <th style={{ border: '1px solid #ccc', padding: 6 }}>商品</th>
-                <th style={{ border: '1px solid #ccc', padding: 6 }}>箱数</th>
-                <th style={{ border: '1px solid #ccc', padding: 6 }}>数量</th>
-                <th style={{ border: '1px solid #ccc', padding: 6 }}>毛重(kg)</th>
-                <th style={{ border: '1px solid #ccc', padding: 6 }}>净重(kg)</th>
-                <th style={{ border: '1px solid #ccc', padding: 6 }}>体积(m³)</th>
+                <th style={{ border: '1px solid #ccc', padding: 6 }}>SKU（商品编码）</th>
+                <th style={{ border: '1px solid #ccc', padding: 6 }}>商品（Description）</th>
+                <th style={{ border: '1px solid #ccc', padding: 6 }}>箱数（Boxes）</th>
+                <th style={{ border: '1px solid #ccc', padding: 6 }}>数量（Qty）</th>
+                <th style={{ border: '1px solid #ccc', padding: 6 }}>毛重（Gross, kg）</th>
+                <th style={{ border: '1px solid #ccc', padding: 6 }}>净重（Net, kg）</th>
+                <th style={{ border: '1px solid #ccc', padding: 6 }}>体积（Volume, m³）</th>
               </tr></thead>
               <tbody>
                 {items.map((item) => (
@@ -187,7 +194,7 @@ const CustomsDocs: React.FC = () => {
                 ))}
               </tbody>
               <tfoot><tr style={{ fontWeight: 700 }}>
-                <td style={{ border: '1px solid #ccc', padding: 6 }} colSpan={2}>合计</td>
+                <td style={{ border: '1px solid #ccc', padding: 6 }} colSpan={2}>合计（Total）</td>
                 <td style={{ border: '1px solid #ccc', padding: 6, textAlign: 'right' }}>{totalBoxes}</td>
                 <td style={{ border: '1px solid #ccc', padding: 6, textAlign: 'right' }}>{totalQty}</td>
                 <td style={{ border: '1px solid #ccc', padding: 6, textAlign: 'right' }}>{totalGW.toFixed(2)}</td>
@@ -203,34 +210,38 @@ const CustomsDocs: React.FC = () => {
       case 'cd':
         return (
           <div style={{ fontFamily: 'monospace', padding: 20, background: '#fafafa', border: '1px solid #ddd', borderRadius: 4, minHeight: 400 }}>
-            <h3 style={{ margin: '0 0 16px', fontSize: 15, textAlign: 'center' }}>出口货物报关单</h3>
+            <h3 style={{ margin: '0 0 16px', fontSize: 15, textAlign: 'center' }}>
+              出口货物报关单（Customs Declaration）
+            </h3>
             <div style={{ fontSize: 12, lineHeight: 2 }}>
-              <div><strong>报关单编号：</strong>530120261000123456</div>
-              <div><strong>出口口岸：</strong>蛇口海关 (5301)</div>
-              <div><strong>备案号：</strong>4428A123456</div>
-              <div><strong>出口日期：</strong>2026-10-05</div>
-              <div><strong>经营单位：</strong>深圳海拓跨境科技有限公司 (4403169ABC)</div>
-              <div><strong>境内货源地：</strong>深圳</div>
-              <div><strong>监管方式：</strong>跨境电商出口海外仓 (9810)</div>
-              <div><strong>运输方式：</strong>江海运输</div>
-              <div><strong>指运港：</strong>英国 · 费利克斯托</div>
-              <div><strong>成交方式：</strong>FOB</div>
-              <div><strong>总价：</strong>USD {totalUSD.toFixed(2)}</div>
+              <div><strong>报关单编号（Customs No.）：</strong>530120261000123456</div>
+              <div><strong>出口口岸（Port）：</strong>蛇口海关 (5301)</div>
+              <div><strong>备案号（Record No.）：</strong>4428A123456</div>
+              <div><strong>出口日期（Export Date）：</strong>2026-10-05</div>
+              <div><strong>经营单位（Operator）：</strong>深圳海拓跨境科技有限公司 (4403169ABC)</div>
+              <div><strong>境内货源地（Origin）：</strong>深圳</div>
+              <div><strong>监管方式（Supervision Mode）：</strong>跨境电商出口海外仓（9810）</div>
+              <div><strong>运输方式（Transport）：</strong>江海运输（Sea Transport）</div>
+              <div><strong>指运港（Destination Port）：</strong>英国 · 费利克斯托（Felixstowe, UK）</div>
+              <div><strong>成交方式（Trade Term）：</strong>FOB</div>
+              <div><strong>总价（Total）：</strong>USD {totalUSD.toFixed(2)}</div>
             </div>
           </div>
         );
       case 'de':
         return (
           <div style={{ padding: 20, background: '#fafafa', border: '1px solid #ddd', borderRadius: 4, minHeight: 400 }}>
-            <h3 style={{ margin: '0 0 16px', fontSize: 15 }}>报关申报要素</h3>
+            <h3 style={{ margin: '0 0 16px', fontSize: 15 }}>
+              报关申报要素（Declaration Elements）
+            </h3>
             {items.map((item) => (
               <div key={item.skuId} style={{ marginBottom: 16, fontSize: 12, lineHeight: 1.8, borderBottom: '1px solid #eee', paddingBottom: 12 }}>
-                <div><strong>商品编号：</strong>{item.hsCode}</div>
-                <div><strong>商品名称：</strong>{item.skuName} | {item.skuNameEn}</div>
-                <div><strong>品牌：</strong>{item.brand}</div>
-                <div><strong>材质：</strong>{item.material}</div>
-                <div><strong>用途：</strong>{item.purpose}</div>
-                <div><strong>数量：</strong>{item.qty} {item.unit}</div>
+                <div><strong>商品编号（HS Code）：</strong>{item.hsCode}</div>
+                <div><strong>商品名称（Description）：</strong>{item.skuName} | {item.skuNameEn}</div>
+                <div><strong>品牌（Brand）：</strong>{item.brand}</div>
+                <div><strong>材质（Material）：</strong>{item.material}</div>
+                <div><strong>用途（Purpose）：</strong>{item.purpose}</div>
+                <div><strong>数量（Qty）：</strong>{item.qty} {item.unit}</div>
               </div>
             ))}
           </div>
@@ -244,13 +255,13 @@ const CustomsDocs: React.FC = () => {
     <div>
       <button className="back-link" onClick={() => navigate('/')}>← 返回服务中心</button>
       <div className="page-title">报关单证生成</div>
-      <div className="page-subtitle">从发货数据到海关结关，一站式完成报关资料制作与推送</div>
+      <div className="page-subtitle">从发货数据到海关结关，生成报关五联单并推送报关</div>
 
       <div style={{ display: 'flex', gap: 12, marginBottom: 20, background: '#fff', border: '1px solid #e2e8f0', borderRadius: 8, padding: '12px 20px', alignItems: 'center', flexWrap: 'wrap' }}>
         <span style={{ fontWeight: 600, color: '#2b6cb0', fontSize: 14 }}>{currentBatch.batchNo}</span>
-        <StatusBadge status="cleared" label={currentBatch.mode} />
+        <StatusBadge status="cleared" label={currentBatch.modeName} />
         <span style={{ color: '#718096', fontSize: 13 }}>{currentBatch.destinationName}</span>
-        <span style={{ color: '#718096', fontSize: 13 }}>{currentBatch.skuCount} SKU</span>
+        <span style={{ color: '#718096', fontSize: 13 }}>{currentBatch.skuCount} SKU（商品编码）</span>
         <span style={{ color: '#718096', fontSize: 13 }}>{currentBatch.orderCount} 订单</span>
         <span style={{ color: '#718096', fontSize: 13, fontWeight: 500 }}>USD {currentBatch.exportAmount.toLocaleString()}</span>
       </div>
@@ -262,7 +273,7 @@ const CustomsDocs: React.FC = () => {
           const currentStep = ['pending_docs', 'docs_generated', 'pushed', 'processing', 'cleared'].indexOf(step);
           const isActive = currentStep <= stepIdx;
           const isCurrent = currentStep === stepIdx;
-          const labels = ['发货数据', '生成单证', '推送报关', '海关处理', '已结关'];
+          const labels = ['发货数据', '生成五联单', '推送报关', '海关处理', '已结关'];
           return (
             <React.Fragment key={step}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -323,6 +334,7 @@ const CustomsDocs: React.FC = () => {
               <button
                 onClick={handleGenerateDocs}
                 disabled={animating}
+                className="interactive-btn"
                 style={{
                   width: '100%',
                   padding: '10px 0',
@@ -332,20 +344,20 @@ const CustomsDocs: React.FC = () => {
                   borderRadius: 6,
                   fontSize: 14,
                   fontWeight: 500,
-                  cursor: 'pointer',
                 }}
               >
-                {animating ? '生成中...' : '生成报关资料'}
+                {animating ? '生成中...' : '生成报关五联单'}
               </button>
             )}
 
             {customsStatus === 'docs_generated' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <div style={{ fontSize: 13, color: '#48bb78', fontWeight: 500, marginBottom: 4 }}>
-                  ✓ 单证已生成
+                  ✓ 五联单已生成
                 </div>
                 <button
                   onClick={handlePushCustoms}
+                  className="interactive-btn"
                   style={{
                     width: '100%',
                     padding: '10px 0',
@@ -355,7 +367,6 @@ const CustomsDocs: React.FC = () => {
                     borderRadius: 6,
                     fontSize: 14,
                     fontWeight: 500,
-                    cursor: 'pointer',
                   }}
                 >
                   确认并推送报关
@@ -395,49 +406,55 @@ const CustomsDocs: React.FC = () => {
 
           {/* KPIs */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 12 }}>
-            <KPICard label="总金额 (USD)" value={totalUSD.toFixed(2)} />
-            <KPICard label="总毛重 (kg)" value={totalGW.toFixed(2)} />
-            <KPICard label="总体积 (m³)" value={totalVol.toFixed(4)} />
+            <KPICard label="总金额（Total, USD）" value={totalUSD.toFixed(2)} />
+            <KPICard label="总毛重（Gross, kg）" value={totalGW.toFixed(2)} />
+            <KPICard label="总体积（Volume, m³）" value={totalVol.toFixed(4)} />
           </div>
         </div>
       </div>
 
-      {/* Documents section */}
+      {/* Documents section - 五联单 */}
       <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: 20 }}>
         <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 600, color: '#2d3748' }}>
-          单证资料
+          报关五联单
         </h3>
+        <div style={{ fontSize: 12, color: '#718096', marginBottom: 16 }}>
+          五联单包括：销售合同（Sales Contract）、商业发票（Commercial Invoice）、装箱单（Packing List）、报关单（Customs Declaration）、申报要素（Declaration Elements）
+        </div>
         {!docsGenerated ? (
           <div style={{ fontSize: 13, color: '#a0aec0', textAlign: 'center', padding: 24 }}>
-            请先点击「生成报关资料」生成单证
+            请先点击「生成报关五联单」生成单证
           </div>
         ) : (
-          <div style={{ display: 'flex', gap: 12 }}>
-            {docsList.map((doc) => (
-              <button
-                key={doc.key}
-                onClick={() => setPreviewDoc(previewDoc === doc.key ? null : doc.key)}
-                style={{
-                  padding: '10px 16px',
-                  border: `1px solid ${previewDoc === doc.key ? '#2b6cb0' : '#e2e8f0'}`,
-                  borderRadius: 6,
-                  background: previewDoc === doc.key ? '#ebf8ff' : '#fff',
-                  cursor: 'pointer',
-                  fontSize: 13,
-                  color: previewDoc === doc.key ? '#2b6cb0' : '#4a5568',
-                  fontWeight: 500,
-                  transition: 'all 0.15s',
-                }}
-              >
-                {doc.name} {previewDoc === doc.key ? '▲' : '▼'}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {previewDoc && (
-          <div style={{ marginTop: 16 }}>
-            {getDocContent(previewDoc)}
+          <div>
+            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+              {docsList.map((doc) => (
+                <button
+                  key={doc.key}
+                  onClick={() => setPreviewDoc(previewDoc === doc.key ? null : doc.key)}
+                  className="interactive-doc-card"
+                  style={{
+                    padding: '12px 18px',
+                    border: `1px solid ${previewDoc === doc.key ? '#2b6cb0' : '#e2e8f0'}`,
+                    borderRadius: 8,
+                    background: previewDoc === doc.key ? '#ebf8ff' : '#fff',
+                    fontSize: 13,
+                    color: previewDoc === doc.key ? '#2b6cb0' : '#4a5568',
+                    fontWeight: 500,
+                    minWidth: 140,
+                    textAlign: 'center',
+                  }}
+                >
+                  <div style={{ fontWeight: 600 }}>{doc.name}</div>
+                  <div style={{ fontSize: 11, color: '#718096', marginTop: 2 }}>{doc.nameEn}</div>
+                </button>
+              ))}
+            </div>
+            {previewDoc && (
+              <div style={{ marginTop: 16 }}>
+                {getDocContent(previewDoc)}
+              </div>
+            )}
           </div>
         )}
       </div>

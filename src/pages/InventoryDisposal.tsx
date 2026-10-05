@@ -2,17 +2,44 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { buildDisposalCases } from '../data/inventory';
 import StatusBadge from '../components/StatusBadge/StatusBadge';
+import FishboneDiagram from '../components/FishboneDiagram/FishboneDiagram';
+import type { FishboneBranch } from '../components/FishboneDiagram/FishboneDiagram';
 
 const InventoryDisposal: React.FC = () => {
   const navigate = useNavigate();
   const [showPlan, setShowPlan] = React.useState(false);
   const cases = buildDisposalCases();
 
+  // Overseas warehouse relation diagram
+  const warehouseTop: FishboneBranch[] = [
+    { id: 'w-writeoff', title: '核销', detail: '订单 + 物流运单号' },
+  ];
+  const warehouseBottom: FishboneBranch[] = [
+    { id: 'w-slow', title: '滞销', detail: '处理价 / 报关价 / 视同内销价' },
+    { id: 'w-dist', title: '分销', detail: '订单 + 物流 + 真实性 + 主体一致性' },
+  ];
+
   return (
     <div>
       <button className="back-link" onClick={() => navigate('/')}>← 返回服务中心</button>
       <div className="page-title">核销 · 滞销 · 分销</div>
-      <div className="page-subtitle">海外仓库存健康监测与异常处置</div>
+      <div className="page-subtitle">海外仓库存健康监测与异常处置 · 核销关系图</div>
+
+      {/* Fishbone / Branch diagram for overseas warehouse */}
+      <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: '20px 20px 12px', marginBottom: 24 }}>
+        <h3 style={{ margin: '0 0 8px', fontSize: 14, fontWeight: 600, color: '#2d3748' }}>
+          海外仓货物关系图
+        </h3>
+        <div style={{ fontSize: 12, color: '#718096', marginBottom: 8 }}>
+          海外仓货物不是只有库存数量，后续还需要核销、滞销处置和分销真实性验证
+        </div>
+        <FishboneDiagram
+          topic="海外仓货物"
+          topicSub="Overseas Warehouse"
+          topBranches={warehouseTop}
+          bottomBranches={warehouseBottom}
+        />
+      </div>
 
       {/* Flow visualization */}
       <div style={{
@@ -48,7 +75,7 @@ const InventoryDisposal: React.FC = () => {
 
       {/* Case */}
       {cases.map((c, i) => (
-        <div key={i} style={{
+        <div key={i} className="interactive-card" style={{
           background: '#fff', border: '1px solid #fed7d7', borderRadius: 12, padding: 24, marginBottom: 20,
           borderLeft: '4px solid #fc8181',
         }}>
@@ -71,7 +98,7 @@ const InventoryDisposal: React.FC = () => {
 
           <div style={{ marginBottom: 16 }}>
             <div style={{ fontSize: 13, color: '#744210', background: '#fffbeb', borderRadius: 6, padding: '10px 14px', border: '1px solid #f6e05e' }}>
-              🔍 诊断：该 SKU 在英国海外仓连续 45 天无销售记录，库存周转率为 0，存在滞销风险。建议及时制定促销或分销方案，减少仓储成本。
+              🔍 诊断：该 SKU（商品编码）在英国海外仓连续 45 天无销售记录，库存周转率为 0，存在滞销风险。建议及时制定促销或分销方案，减少仓储成本。
             </div>
           </div>
 
@@ -87,6 +114,7 @@ const InventoryDisposal: React.FC = () => {
             <div style={{ marginTop: 16 }}>
               <button
                 onClick={() => setShowPlan(!showPlan)}
+                className="interactive-btn"
                 style={{
                   padding: '8px 20px',
                   background: '#fff',
@@ -95,7 +123,6 @@ const InventoryDisposal: React.FC = () => {
                   borderRadius: 6,
                   fontSize: 13,
                   fontWeight: 500,
-                  cursor: 'pointer',
                 }}
               >
                 {showPlan ? '收起处理方案' : '查看处理方案'}

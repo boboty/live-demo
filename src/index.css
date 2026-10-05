@@ -58,3 +58,63 @@ input, select, textarea, button {
 ::-webkit-scrollbar-thumb:hover {
   background: #a0aec0;
 }
+
+/* ====== Global unified hover effects ====== */
+.interactive-card {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.interactive-card:hover {
+  transform: translateY(-2px) scale(1.018);
+  box-shadow: 0 6px 16px rgba(43, 108, 176, 0.12);
+  border-color: #90cdf4 !important;
+}
+
+.interactive-card:active {
+  transform: translateY(0) scale(1.0);
+  box-shadow: 0 2px 4px rgba(43, 108, 176, 0.08);
+}
+
+.interactive-btn {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.interactive-btn:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 4px 12px rgba(43, 108, 176, 0.15);
+}
+
+.interactive-doc-card {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.interactive-doc-card:hover {
+  transform: translateY(-2px) scale(1.015);
+  box-shadow: 0 4px 14px rgba(43, 108, 176, 0.12);
+  border-color: #2b6cb0 !important;
+}
+
+/* Tab buttons unified hover */
+.tab-btn {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+  background: #f7fafc;
+}
+
+/* Fishbone-like node cards */
+.fishbone-node {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.fishbone-node:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 3px 10px rgba(39, 103, 73, 0.12);
+  border-color: #276749 !important;
+}

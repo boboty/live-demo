@@ -5,6 +5,8 @@ import { useDemoStore } from '../store/demoStore';
 import StatusBadge from '../components/StatusBadge/StatusBadge';
 import DataTable from '../components/DataTable/DataTable';
 import KPICard from '../components/KPI/KPI';
+import FishboneDiagram from '../components/FishboneDiagram/FishboneDiagram';
+import type { FishboneBranch } from '../components/FishboneDiagram/FishboneDiagram';
 
 const Expense: React.FC = () => {
   const navigate = useNavigate();
@@ -62,17 +64,47 @@ const Expense: React.FC = () => {
     },
   ];
 
+  // Fishbone: expense evidence structure
+  const expenseFishboneTop: FishboneBranch[] = [
+    { id: 'e-invoice', title: '发票', detail: '报关费 BG202610001' },
+    { id: 'e-receipt', title: '流水单', detail: '银行付款回单' },
+    { id: 'e-contract', title: '合同', detail: '运输服务合同' },
+    { id: 'e-receipt2', title: '收据', detail: '仓储费收据' },
+  ];
+
+  const expenseFishboneBottom: FishboneBranch[] = [
+    { id: 'e-screenshot', title: '后台截图', detail: '平台扣费截图' },
+    { id: 'e-email', title: '邮件确认', detail: '供应商邮件' },
+    { id: 'e-invoice-overseas', title: '境外Invoice', detail: '海外仓商业发票' },
+  ];
+
   return (
     <div>
       <button className="back-link" onClick={() => navigate('/')}>← 返回服务中心</button>
       <div className="page-title">费用确认</div>
-      <div className="page-subtitle">业务费用归集与凭证确认</div>
+      <div className="page-subtitle">业务费用归集与凭证确认 · 多资料交叉验证</div>
 
       <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
         <KPICard label="本批费用" value={`¥${totalAmount.toFixed(2)}`} highlight />
         <KPICard label="已确认" value={`¥${confirmedAmount.toFixed(2)}`} color="#276749" />
         <KPICard label="待确认" value={`¥${pendingAmount.toFixed(2)}`} color="#d69e2e" />
         <KPICard label="凭证完整度" value={`${Math.round(invoiceComplete * 100)}%`} color="#2b6cb0" />
+      </div>
+
+      {/* Fishbone: evidence structure */}
+      <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: '20px 20px 12px', marginBottom: 20 }}>
+        <h3 style={{ margin: '0 0 8px', fontSize: 14, fontWeight: 600, color: '#2d3748' }}>
+          费用凭证关系图（鱼骨图）
+        </h3>
+        <div style={{ fontSize: 12, color: '#718096', marginBottom: 8 }}>
+          费用事实由哪些资料共同支撑
+        </div>
+        <FishboneDiagram
+          topic="费用"
+          topicSub="境内境外"
+          topBranches={expenseFishboneTop}
+          bottomBranches={expenseFishboneBottom}
+        />
       </div>
 
       <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: 20 }}>
@@ -84,7 +116,8 @@ const Expense: React.FC = () => {
 
       {expenseData.filter((_, i) => !expenses[i]?.confirmed).length > 0 && (
         <div style={{ marginTop: 16, background: '#fffbeb', border: '1px solid #f6e05e', borderRadius: 8, padding: '12px 16px', fontSize: 13, color: '#744210' }}>
-          ⚠ 仍有 {expenseData.filter((_, i) => !expenses[i]?.confirmed).length} 项费用待确认。其中运输费 ¥2,800 尚未取得合规发票，需补充后确认。
+          ⚠ 仍有 {expenseData.filter((_, i) => !expenses[i]?.confirmed).length} 项费用待确认。
+          其中运输费 ¥2,800 尚未取得合规发票（Invoice），需补充后确认。
         </div>
       )}
     </div>

@@ -15,12 +15,14 @@ export interface DemoStore {
 
   monthlyGenerated: boolean;
 
+  invoicePlanGenerated: boolean;
   invoiceGenerated: boolean;
   invoiceConfirmed: boolean;
 
   refundMatched: boolean;
 
   taxDataGenerated: boolean;
+  declarationFormGenerated: boolean;
 
   expenses: ExpenseState[];
 
@@ -28,10 +30,12 @@ export interface DemoStore {
   pushCustoms: () => void;
   simulateClearance: () => void;
   generateMonthlyInventory: () => void;
+  generateInvoicePlan: () => void;
   generateInvoice: () => void;
   confirmInvoice: () => void;
   matchRefund: () => void;
   generateTaxData: () => void;
+  generateDeclarationForm: () => void;
   confirmExpense: (index: number) => void;
   resetAll: () => void;
 }
@@ -53,12 +57,14 @@ export const useDemoStore = create<DemoStore>()(
 
       monthlyGenerated: false,
 
+      invoicePlanGenerated: false,
       invoiceGenerated: false,
       invoiceConfirmed: false,
 
       refundMatched: false,
 
       taxDataGenerated: false,
+      declarationFormGenerated: false,
 
       expenses: buildInitialExpenses(),
 
@@ -76,6 +82,8 @@ export const useDemoStore = create<DemoStore>()(
 
       generateMonthlyInventory: () => set({ monthlyGenerated: true }),
 
+      generateInvoicePlan: () => set({ invoicePlanGenerated: true }),
+
       generateInvoice: () => set({ invoiceGenerated: true }),
 
       confirmInvoice: () => set({ invoiceConfirmed: true }),
@@ -83,6 +91,8 @@ export const useDemoStore = create<DemoStore>()(
       matchRefund: () => set({ refundMatched: true }),
 
       generateTaxData: () => set({ taxDataGenerated: true }),
+
+      generateDeclarationForm: () => set({ declarationFormGenerated: true }),
 
       confirmExpense: (index: number) =>
         set((state) => {
@@ -98,10 +108,12 @@ export const useDemoStore = create<DemoStore>()(
           clearanceDate: null,
           docsGenerated: false,
           monthlyGenerated: false,
+          invoicePlanGenerated: false,
           invoiceGenerated: false,
           invoiceConfirmed: false,
           refundMatched: false,
           taxDataGenerated: false,
+          declarationFormGenerated: false,
           expenses: buildInitialExpenses(),
         }),
     }),
