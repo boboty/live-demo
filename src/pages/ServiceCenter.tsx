@@ -92,16 +92,15 @@ const ServiceCenter: React.FC = () => {
     },
   ];
 
-  const getCardStyle = (modInteractive: boolean) => ({
-    border: `1px solid ${modInteractive ? '#bed9f7' : '#e2e8f0'}`,
+  const getCardStyle = (_modInteractive: boolean) => ({
+    border: `1px solid #e2e8f0`,
     background: '#fff' as const,
     borderRadius: 12,
     padding: '24px 20px',
     cursor: 'pointer',
     transition: 'all 0.2s ease',
     position: 'relative' as const,
-    boxShadow: modInteractive ? '0 1px 4px rgba(43,108,176,0.08)' : 'none',
-    transform: 'none',
+    zIndex: 1 as const,
   });
 
   return (

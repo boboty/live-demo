@@ -58,11 +58,11 @@ const CustomsDocs: React.FC = () => {
   const handleGenerateDocs = () => {
     setAnimating(true);
     setAnimText('正在生成报关五联单...');
-    setTimeout(() => setAnimText('正在生成 Sales Contract（销售合同）...'), 300);
-    setTimeout(() => setAnimText('正在生成 Commercial Invoice（商业发票）...'), 600);
-    setTimeout(() => setAnimText('正在生成 Packing List（装箱单）...'), 900);
-    setTimeout(() => setAnimText('正在生成 Customs Declaration（报关单）...'), 1200);
-    setTimeout(() => setAnimText('正在生成 Declaration Elements（申报要素）...'), 1500);
+    setTimeout(() => setAnimText('正在生成 销售合同（Sales Contract）...'), 300);
+    setTimeout(() => setAnimText('正在生成 商业发票（Commercial Invoice）...'), 600);
+    setTimeout(() => setAnimText('正在生成 装箱单（Packing List）...'), 900);
+    setTimeout(() => setAnimText('正在生成 报关单（Customs Declaration）...'), 1200);
+    setTimeout(() => setAnimText('正在生成 申报要素（Declaration Elements）...'), 1500);
     setTimeout(() => {
       setAnimating(false);
       generateCustomsDocs();
@@ -88,7 +88,7 @@ const CustomsDocs: React.FC = () => {
         return (
           <div style={{ fontFamily: 'serif', padding: 20, background: '#fafafa', border: '1px solid #ddd', borderRadius: 4, minHeight: 400 }}>
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
-              <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Sales Contract（销售合同）</h2>
+              <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>销售合同（Sales Contract）</h2>
               <div style={{ fontSize: 12, color: '#666' }}>合同编号：SC-EX20261005001</div>
             </div>
             <div style={{ marginBottom: 16, fontSize: 12 }}>
@@ -130,7 +130,7 @@ const CustomsDocs: React.FC = () => {
         return (
           <div style={{ fontFamily: 'serif', padding: 20, background: '#fafafa', border: '1px solid #ddd', borderRadius: 4, minHeight: 400 }}>
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
-              <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Commercial Invoice（商业发票）</h2>
+              <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>商业发票（Commercial Invoice）</h2>
               <div style={{ fontSize: 12, color: '#666' }}>发票号：INV-EX20261005001</div>
             </div>
             <div style={{ marginBottom: 16, fontSize: 12 }}>
@@ -167,7 +167,7 @@ const CustomsDocs: React.FC = () => {
         return (
           <div style={{ fontFamily: 'serif', padding: 20, background: '#fafafa', border: '1px solid #ddd', borderRadius: 4, minHeight: 400 }}>
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
-              <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Packing List（装箱单）</h2>
+              <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>装箱单（Packing List）</h2>
               <div style={{ fontSize: 12, color: '#666' }}>装箱单号：PL-EX20261005001</div>
             </div>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, marginBottom: 16 }}>

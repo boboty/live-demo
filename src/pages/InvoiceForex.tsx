@@ -88,7 +88,7 @@ const InvoiceForex: React.FC = () => {
     { field: '报关金额', value: `¥${invoicePlan.customsAmountCNY.toLocaleString()}` },
     { field: '应开出口发票', value: `¥${invoicePlan.shouldIssueExportInvoice.toLocaleString()}` },
     { field: '已开出口发票', value: invoiceGenerated ? `¥${invoicePlan.shouldIssueExportInvoice.toLocaleString()}` : '¥0.00' },
-    { field: '进项发票金额', value: `¥${invoicePlan.purchaseInvoiceTotal.toLocaleString()}` },
+    { field: '应取得进项发票', value: `¥${invoicePlan.expectedPurchaseTotal.toLocaleString()}` },
     { field: '已匹配进项', value: `¥${invoicePlan.matchedPurchase.toLocaleString()}` },
     { field: '待补进项', value: invoicePlan.pendingPurchaseSKU || '已完成' },
     { field: '状态', value: <StatusBadge
@@ -180,7 +180,7 @@ const InvoiceForex: React.FC = () => {
   const renderInvoiceContent = () => (
     <div style={{ fontFamily: 'serif', padding: 20, background: '#fafafa', border: '1px solid #ddd', borderRadius: 4, minHeight: 300 }}>
       <div style={{ textAlign: 'center', marginBottom: 20, borderBottom: '2px solid #333', paddingBottom: 8 }}>
-        <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, letterSpacing: 1 }}>COMMERCIAL INVOICE（商业发票）</h2>
+        <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, letterSpacing: 1 }}>商业发票（Commercial Invoice）</h2>
         <div style={{ fontSize: 11, color: '#666' }}>发票号：{invoiceData.invoiceNo}</div>
       </div>
       <div style={{ fontSize: 11, marginBottom: 12, lineHeight: 1.8 }}>
@@ -422,7 +422,7 @@ const InvoiceForex: React.FC = () => {
                 <div style={{ display: 'flex', gap: 20 }}>
                   <div style={{ flex: 1 }}>{renderInvoicePreview()}</div>
                   <div style={{ width: 380 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#2d3748', marginBottom: 8 }}>Invoice（商业发票）</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#2d3748', marginBottom: 8 }}>商业发票（Commercial Invoice）</div>
                     {renderInvoiceContent()}
                   </div>
                 </div>
@@ -439,7 +439,7 @@ const InvoiceForex: React.FC = () => {
             <KPICard label="进项发票总数" value={`${purchaseInvoices.filter(p => p.matchStatus !== 'missing').length}/4`} />
             <KPICard label="已匹配" value={purchaseInvoices.filter(p => p.matchStatus === 'matched').length.toString()} color="#276749" />
             <KPICard label="缺票" value={purchaseInvoices.filter(p => p.matchStatus === 'missing').length.toString()} color="#e53e3e" />
-            <KPICard label="匹配率" value={`${Math.round((purchaseInvoices.filter(p => p.matchStatus === 'matched').length / 4) * 100)}%`} highlight />
+            <KPICard label="进项匹配率" value={`${Math.round((purchaseInvoices.filter(p => p.matchStatus === 'matched').length / 4) * 100)}%`} highlight />
           </div>
 
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: 20 }}>
@@ -459,24 +459,67 @@ const InvoiceForex: React.FC = () => {
             </div>
           )}
 
-          {/* Purchase invoice detail drawer */}
+          {/* Purchase invoice detail drawer — invoice-style preview */}
           {previewPurchase && (() => {
             const inv = purchaseInvoices.find(p => p.invoiceNo === previewPurchase);
             if (!inv || inv.matchStatus === 'missing') return null;
             return (
-              <div style={{ marginTop: 16, padding: 20, background: '#fafafa', border: '1px solid #e2e8f0', borderRadius: 8 }}>
-                <h4 style={{ margin: '0 0 12px', fontSize: 14, color: '#2d3748' }}>
-                  进项发票详情 — {inv.invoiceNo}
-                </h4>
-                <div style={{ fontSize: 13, lineHeight: 2 }}>
-                  <div><strong>发票号码：</strong>{inv.invoiceNo}</div>
-                  <div><strong>销方名称：</strong>{inv.supplierName}</div>
-                  <div><strong>商品：</strong>{inv.skuName}（{inv.skuId}）</div>
-                  <div><strong>不含税金额：</strong>¥{inv.amount.toFixed(2)}</div>
-                  <div><strong>税额：</strong>¥{inv.taxAmount.toFixed(2)}</div>
-                  <div><strong>价税合计：</strong>¥{inv.totalAmount.toFixed(2)}</div>
-                  <div><strong>开票日期：</strong>{inv.issueDate}</div>
-                  <div><strong>匹配状态：</strong><StatusBadge status="completed" label="已匹配" /></div>
+              <div style={{
+                fontFamily: 'serif',
+                marginTop: 16, padding: 28,
+                background: '#fafafa', border: '1px solid #ddd', borderRadius: 8,
+                maxWidth: 620,
+              }}>
+                <div style={{ textAlign: 'center', marginBottom: 20, borderBottom: '2px solid #333', paddingBottom: 10 }}>
+                  <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, letterSpacing: 1 }}>
+                    增值税专用发票（进项）
+                  </h3>
+                  <div style={{ fontSize: 11, color: '#666', marginTop: 4 }}>发票号码：{inv.invoiceNo}</div>
+                </div>
+                <div style={{ fontSize: 12, marginBottom: 14, lineHeight: 1.8, display: 'flex', justifyContent: 'space-between' }}>
+                  <div>
+                    <div><strong>购方（Buyer）：</strong>深圳海拓跨境科技有限公司</div>
+                    <div><strong>纳税人识别号：</strong>91440300MA5HX9KJ2Q</div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div><strong>销方（Supplier）：</strong>{inv.supplierName}</div>
+                    <div><strong>开票日期（Date）：</strong>{inv.issueDate}</div>
+                  </div>
+                </div>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, marginBottom: 14 }}>
+                  <thead>
+                    <tr style={{ background: '#edf2f7' }}>
+                      <th style={{ border: '1px solid #ccc', padding: 6 }}>商品名称</th>
+                      <th style={{ border: '1px solid #ccc', padding: 6 }}>数量</th>
+                      <th style={{ border: '1px solid #ccc', padding: 6 }}>单位</th>
+                      <th style={{ border: '1px solid #ccc', padding: 6 }}>单价（不含税）</th>
+                      <th style={{ border: '1px solid #ccc', padding: 6 }}>金额</th>
+                      <th style={{ border: '1px solid #ccc', padding: 6 }}>税率</th>
+                      <th style={{ border: '1px solid #ccc', padding: 6 }}>税额</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style={{ border: '1px solid #ccc', padding: 6 }}>{inv.skuName}</td>
+                      <td style={{ border: '1px solid #ccc', padding: 6, textAlign: 'right' }}>1</td>
+                      <td style={{ border: '1px solid #ccc', padding: 6, textAlign: 'center' }}>批</td>
+                      <td style={{ border: '1px solid #ccc', padding: 6, textAlign: 'right' }}>{inv.amount.toFixed(2)}</td>
+                      <td style={{ border: '1px solid #ccc', padding: 6, textAlign: 'right' }}>{inv.amount.toFixed(2)}</td>
+                      <td style={{ border: '1px solid #ccc', padding: 6, textAlign: 'center' }}>13%</td>
+                      <td style={{ border: '1px solid #ccc', padding: 6, textAlign: 'right' }}>{inv.taxAmount.toFixed(2)}</td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr style={{ fontWeight: 700, background: '#f7fafc' }}>
+                      <td colSpan={4} style={{ border: '1px solid #ccc', padding: 6, textAlign: 'right' }}>价税合计（Total）</td>
+                      <td style={{ border: '1px solid #ccc', padding: 6, textAlign: 'right' }}>{inv.totalAmount.toFixed(2)}</td>
+                      <td style={{ border: '1px solid #ccc', padding: 6 }}></td>
+                      <td style={{ border: '1px solid #ccc', padding: 6, textAlign: 'right' }}>{inv.taxAmount.toFixed(2)}</td>
+                    </tr>
+                  </tfoot>
+                </table>
+                <div style={{ fontSize: 11, color: '#999', textAlign: 'right' }}>
+                  匹配状态：<StatusBadge status="completed" label="已匹配" />
                 </div>
               </div>
             );

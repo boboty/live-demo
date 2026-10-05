@@ -46,7 +46,7 @@ const Inventory: React.FC = () => {
   ];
 
   const summaryColumns = [
-    { key: 'skuName', label: 'SKU' },
+    { key: 'skuName', label: 'SKU（商品编码）' },
     { key: 'beginQty', label: '期初' },
     { key: 'inboundQty', label: '入库' },
     { key: 'salesQty', label: '销售' },

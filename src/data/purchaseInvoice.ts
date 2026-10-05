@@ -46,7 +46,9 @@ export interface InvoicePlan {
   customsAmountCNY: number;
   shouldIssueExportInvoice: number;
   issuedExportInvoice: number;
-  purchaseInvoiceTotal: number;
+  /** Total purchase invoices expected (i.e. total customs value) */
+  expectedPurchaseTotal: number;
+  /** Actually matched purchase invoices amount */
   matchedPurchase: number;
   pendingPurchaseSKU: string;
   status: 'pending' | 'partial' | 'completed';
@@ -59,14 +61,15 @@ export function buildInvoicePlan(): InvoicePlan {
     .filter((p) => p.matchStatus === 'matched')
     .reduce((s, p) => s + p.totalAmount, 0);
   const missingSku = purchases.find((p) => p.matchStatus === 'missing');
+  const missingAmount = missingSku ? customsItems.find((ci) => ci.skuId === missingSku.skuId)?.totalCNY ?? 0 : 0;
   return {
     batchNo: 'EX20261005001',
     customsAmountCNY: customsTotal,
     shouldIssueExportInvoice: customsTotal,
     issuedExportInvoice: 0,
-    purchaseInvoiceTotal: customsTotal,
+    expectedPurchaseTotal: customsTotal,
     matchedPurchase: matchedTotal,
-    pendingPurchaseSKU: missingSku ? `${missingSku.skuId} ${missingSku.skuName}` : '',
+    pendingPurchaseSKU: missingSku ? `${missingSku.skuId} ${missingSku.skuName} ¥${missingAmount.toFixed(2)}` : '',
     status: matchedTotal >= customsTotal ? 'completed' : matchedTotal > 0 ? 'partial' : 'pending',
   };
 }

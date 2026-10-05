@@ -66,14 +66,17 @@ input, select, textarea, button {
 }
 
 .interactive-card:hover {
-  transform: translateY(-2px) scale(1.018);
-  box-shadow: 0 6px 16px rgba(43, 108, 176, 0.12);
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 12px 28px rgba(43, 108, 176, 0.15), 0 4px 12px rgba(43, 108, 176, 0.08);
   border-color: #90cdf4 !important;
+  background: #f7fbff !important;
+  z-index: 10;
+  position: relative;
 }
 
 .interactive-card:active {
-  transform: translateY(0) scale(1.0);
-  box-shadow: 0 2px 4px rgba(43, 108, 176, 0.08);
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 0 6px 16px rgba(43, 108, 176, 0.1);
 }
 
 .interactive-btn {
