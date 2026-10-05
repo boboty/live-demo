@@ -61,8 +61,8 @@ export function buildRefundData(): RefundSummary {
     batchNo: currentBatch.batchNo,
     matchRate,
     matchStatus: matchRate >= 100 ? 'complete' : 'partial_anomaly',
-    estimatedRefund: 12030,
-    estimatedRefundCNY: 12030,
+    estimatedRefund: Math.round(totalExport * 0.13),
+    estimatedRefundCNY: Math.round(totalExport * 0.13),
     totalExportAmount: totalExport,
     items,
   };

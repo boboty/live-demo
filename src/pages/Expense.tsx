@@ -12,7 +12,7 @@ const Expense: React.FC = () => {
   const expenseData = buildExpenses();
 
   const totalAmount = expenseData.reduce((s, e) => s + e.amount, 0);
-  const confirmedAmount = expenseData.filter((_, i) => expenses[i]?.confirmed).reduce((s, _, i) => s + expenseData[i].amount, 0);
+  const confirmedAmount = expenses.reduce((s, state, i) => state.confirmed ? s + expenseData[i].amount : s, 0);
   const pendingAmount = totalAmount - confirmedAmount;
   const invoiceComplete = expenseData.filter((e) => e.hasInvoice).length / expenseData.length;
 

@@ -11,7 +11,7 @@ const TaxRefundMatch: React.FC = () => {
   const { refundMatched, matchRefund } = useDemoStore();
   const [matching, setMatching] = useState(false);
   const [matchStep, setMatchStep] = useState(0);
-  const [showTable, setShowTable] = useState(false);
+  const [showTable, setShowTable] = useState(refundMatched); // default open if already matched
 
   const data = buildRefundData();
 
@@ -61,6 +61,7 @@ const TaxRefundMatch: React.FC = () => {
       <div className="page-title">退税资料智能匹配</div>
       <div className="page-subtitle">系统自动对报关单、平台订单、收汇流水、进项发票、出口发票进行五方数据匹配</div>
 
+      {/* Summary bar */}
       <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: '20px 24px', marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
           <div style={{ fontSize: 20, fontWeight: 700, color: '#2b6cb0' }}>{currentBatch.batchNo}</div>
@@ -84,7 +85,7 @@ const TaxRefundMatch: React.FC = () => {
         </div>
       </div>
 
-      {/* Five-card visualization */}
+      {/* Five-card visualization - show when not matched and not matching */}
       {!matching && !refundMatched && (
         <div style={{ display: 'flex', gap: 16, marginBottom: 24, justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
           {['报关单', '平台订单', '进项发票', '出口发票', '银行收汇'].map((name, i) => (
@@ -111,7 +112,7 @@ const TaxRefundMatch: React.FC = () => {
         </div>
       )}
 
-      {/* Match button */}
+      {/* Match button - only if not matched and not currently matching */}
       {!refundMatched && !matching && (
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
           <button
@@ -152,8 +153,8 @@ const TaxRefundMatch: React.FC = () => {
         </div>
       )}
 
-      {/* Result */}
-      {showTable && refundMatched && (
+      {/* Result area — visible after matching */}
+      {refundMatched && (
         <div>
           {/* Anomalies */}
           <div style={{ marginBottom: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -189,14 +190,12 @@ const TaxRefundMatch: React.FC = () => {
                 {showTable ? '收起' : '展开'}
               </button>
             </div>
-            <DataTable columns={matchColumns} data={data.items} />
+            {showTable && <DataTable columns={matchColumns} data={data.items} />}
           </div>
-        </div>
-      )}
 
-      {refundMatched && (
-        <div style={{ marginTop: 16, background: '#f0fff4', border: '1px solid #c6f6d5', borderRadius: 8, padding: '12px 16px', fontSize: 13, color: '#276749' }}>
-          ✓ 智能匹配已完成。报关单、平台订单、收汇流水、进项发票、出口发票已建立交叉核验关系。
+          <div style={{ marginTop: 16, background: '#f0fff4', border: '1px solid #c6f6d5', borderRadius: 8, padding: '12px 16px', fontSize: 13, color: '#276749' }}>
+            ✓ 智能匹配已完成。报关单、平台订单、收汇流水、进项发票、出口发票已建立交叉核验关系。
+          </div>
         </div>
       )}
     </div>

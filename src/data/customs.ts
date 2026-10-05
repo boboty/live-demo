@@ -40,10 +40,10 @@ export interface CustomsItem {
 
 export function buildCustomsItems(): CustomsItem[] {
   const boxAssignment = [
-    { qty: 1680, piecesPerBox: 56 },
-    { qty: 1200, piecesPerBox: 40 },
-    { qty: 400, piecesPerBox: 10 },
-    { qty: 800, piecesPerBox: 20 },
+    { qty: 200, piecesPerBox: 50 },
+    { qty: 150, piecesPerBox: 30 },
+    { qty: 50, piecesPerBox: 10 },
+    { qty: 100, piecesPerBox: 20 },
   ];
 
   return skus.map((sku, i) => {

@@ -7,9 +7,9 @@ export interface SKU {
   material: string;
   purpose: string;
   unit: string;
-  gWeight: number; // gross weight per unit (kg)
-  nWeight: number; // net weight per unit (kg)
-  volume: number; // per unit (m³)
+  gWeight: number;
+  nWeight: number;
+  volume: number;
   priceUSD: number;
   priceCNY: number;
 }
@@ -27,8 +27,8 @@ export const skus: SKU[] = [
     gWeight: 0.085,
     nWeight: 0.072,
     volume: 0.00012,
-    priceUSD: 35.5,
-    priceCNY: 244.95,
+    priceUSD: 25.5,
+    priceCNY: 175.95,
   },
   {
     id: 'SKU1002',
@@ -42,8 +42,8 @@ export const skus: SKU[] = [
     gWeight: 0.21,
     nWeight: 0.18,
     volume: 0.00045,
-    priceUSD: 28.8,
-    priceCNY: 198.72,
+    priceUSD: 18.8,
+    priceCNY: 129.72,
   },
   {
     id: 'SKU1003',
@@ -57,8 +57,8 @@ export const skus: SKU[] = [
     gWeight: 3.2,
     nWeight: 2.85,
     volume: 0.0085,
-    priceUSD: 89.0,
-    priceCNY: 614.1,
+    priceUSD: 30.0,
+    priceCNY: 207.0,
   },
   {
     id: 'SKU1004',
@@ -72,7 +72,7 @@ export const skus: SKU[] = [
     gWeight: 0.65,
     nWeight: 0.52,
     volume: 0.0028,
-    priceUSD: 42.5,
-    priceCNY: 293.25,
+    priceUSD: 39.829,
+    priceCNY: 274.82,
   },
 ];

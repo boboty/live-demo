@@ -1,32 +1,64 @@
-# React + TypeScript + Vite
+# 蜂税通 · 9810 出口业务服务中心 Demo
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+> **高保真交互演示系统** — 展示 9810 跨境电商出口海外仓业务从资质备案到退税核销的完整服务闭环。  
+> ⚠ 仅用于业务演示，非生产系统。
 
-Currently, two official plugins are available:
+## 八大业务模块
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+| 模块 | 定位 | 交互亮点 |
+|------|------|----------|
+| 资质备案 | 企业出口资质控制台 | 7 项备案 Timeline + Drawer 详情 |
+| 报关单证生成 ★ | 发货→单证→推送→结关 | 生成 SC/Inv/PL/报关单/申报要素，预览高保真单证 |
+| 税务申报 | 结关数据→申报表 | 流程引导 + 申报表预览 |
+| 库存明细台账 ★ | SKU 级流水与月末汇总 | 真实流水表 + 月度汇总（期初/入库/销售/退货/损耗/期末） |
+| 发票收汇 ★ | 出口发票 + 银行收汇 | 发票配置→高保真发票预览→确认；收汇流水关联展开 |
+| 退税资料匹配 ★★ | 五方数据智能匹配 | 5 张数据卡环绕 + 五步匹配动画 + 异常提示 + 交叉对比表 |
+| 费用确认 | 业务费用归集 | 发票合规状态 + 逐项确认 |
+| 核销滞销分销 | 海外仓库存健康监测 | 滞销案例展示 + 处理方案 |
 
-## React Compiler
+## 技术栈
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19 + TypeScript
+- Vite 8
+- Zustand (状态管理 + localStorage 持久化)
+- React Router v7
 
-## Expanding the Oxlint configuration
+## 数据串联
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+所有模块共享同一业务数据：
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+- **企业**: 深圳海拓跨境科技有限公司
+- **批次**: EX20261005001 | **模式**: 9810 | **目的国**: 英国
+- **金额**: USD 13,402.90 / ¥92,480.00
+- **SKU**: 4 个 | **平台订单**: 168 笔
+
+金额从 SKU 明细 → 报关合计 → Commercial Invoice → 出口发票 → 收汇 → 退税 → 税务申报，全程一致。
+
+## 本地运行
+
+```bash
+npm install
+npm run dev     # 开发服务器 → http://localhost:5173
+npm run build   # 生产构建 → dist/
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## 推荐直播操作顺序
+
+1. 首页 → 概述 8 大模块
+2. **报关单证生成** → 生成单证 → 推送 → 结关
+3. **库存明细台账** → 查看流水 → 生成月末汇总
+4. **发票收汇** → 生成出口发票 → 预览 → 确认；查看收汇流水
+5. **退税资料匹配** → 开始智能匹配 → 查看匹配结果与异常
+6. 税务申报 → 生成申报数据
+7. 展示首页状态联动变化
+8. 重置演示数据
+
+## 项目结构
+
+```
+src/
+├── data/          Mock 数据（唯一事实来源）
+├── store/         Zustand 状态 + localStorage 持久化
+├── components/    共享 UI 组件
+└── pages/         8 个业务页面 + 首页
+```

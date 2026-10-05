@@ -1,4 +1,5 @@
 import { buildCustomsItems } from './customs';
+import { toChineseAmount } from './chineseAmount';
 
 export interface ExportInvoice {
   invoiceNo: string;
@@ -52,15 +53,18 @@ export function buildExportInvoice(): ExportInvoice {
     buyerAddress: 'Unit 3, Nexus Park, Feltham, London TW14 0AF, UK',
     items,
     totalAmountCNY: +total.toFixed(2),
-    totalAmountWords: '玖万贰仟肆佰捌拾元整',
+    totalAmountWords: toChineseAmount(total),
     status: 'pending',
   };
 }
 
 export function buildForexRecords(): ForexRecord[] {
+  // Sum to exactly 13402.90 USD / 92480 CNY
+  const totalUSD = customsItems.reduce((s, i) => s + i.totalUSD, 0);
+  const totalCNY = customsItems.reduce((s, i) => s + i.totalCNY, 0);
   return [
-    { date: '2026-10-15', bank: '中国银行深圳蛇口支行', currency: 'USD', amount: 5020.16, amountCNY: 34639.1, batchNo: 'EX20261005001', status: 'matched' },
-    { date: '2026-10-18', bank: '中国银行深圳蛇口支行', currency: 'USD', amount: 4380.74, amountCNY: 30227.11, batchNo: 'EX20261005001', status: 'matched' },
-    { date: '2026-10-22', bank: '中国银行深圳蛇口支行', currency: 'USD', amount: 4002.0, amountCNY: 27613.79, batchNo: 'EX20261005001', status: 'matched' },
+    { date: '2026-10-15', bank: '中国银行深圳蛇口支行', currency: 'USD', amount: +(totalUSD * 0.45).toFixed(2), amountCNY: +(totalCNY * 0.45).toFixed(2), batchNo: 'EX20261005001', status: 'matched' },
+    { date: '2026-10-18', bank: '中国银行深圳蛇口支行', currency: 'USD', amount: +(totalUSD * 0.35).toFixed(2), amountCNY: +(totalCNY * 0.35).toFixed(2), batchNo: 'EX20261005001', status: 'matched' },
+    { date: '2026-10-22', bank: '中国银行深圳蛇口支行', currency: 'USD', amount: +(totalUSD * 0.20).toFixed(2), amountCNY: +(totalCNY * 0.20).toFixed(2), batchNo: 'EX20261005001', status: 'matched' },
   ];
 }

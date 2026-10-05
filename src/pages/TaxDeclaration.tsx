@@ -11,6 +11,9 @@ const TaxDeclaration: React.FC = () => {
   const [generating, setGenerating] = React.useState(false);
   const [showForm, setShowForm] = React.useState(false);
 
+  // Derive refund from batch amount
+  const estimatedRefund = Math.round(currentBatch.exportAmountCNY * 0.13);
+
   const handleGenerate = () => {
     setGenerating(true);
     setTimeout(() => {
@@ -98,7 +101,7 @@ const TaxDeclaration: React.FC = () => {
             <div style={{ background: '#f0fff4', border: '1px solid #c6f6d5', borderRadius: 8, padding: 16, marginBottom: 16 }}>
               <div style={{ fontWeight: 600, color: '#276749', marginBottom: 8 }}>✓ 数据校验完成，申报表已生成</div>
               <div style={{ fontSize: 13, color: '#4a5568' }}>
-                申报所属期：202610 | 申报批次：001 | 应退税额：¥12,030.00
+                申报所属期：202610 | 申报批次：001 | 应退税额：¥{estimatedRefund.toLocaleString()}
               </div>
             </div>
 
@@ -135,11 +138,11 @@ const TaxDeclaration: React.FC = () => {
                     </tr>
                     <tr>
                       <td style={{ border: '1px solid #e2e8f0', padding: 8 }}>免抵退税额</td>
-                      <td style={{ border: '1px solid #e2e8f0', padding: 8, textAlign: 'right' }}>12,030.00</td>
+                      <td style={{ border: '1px solid #e2e8f0', padding: 8, textAlign: 'right' }}>{estimatedRefund.toLocaleString()}.00</td>
                     </tr>
                     <tr>
                       <td style={{ border: '1px solid #e2e8f0', padding: 8 }}>应退税额</td>
-                      <td style={{ border: '1px solid #e2e8f0', padding: 8, textAlign: 'right', fontWeight: 700, color: '#276749' }}>12,030.00</td>
+                      <td style={{ border: '1px solid #e2e8f0', padding: 8, textAlign: 'right', fontWeight: 700, color: '#276749' }}>{estimatedRefund.toLocaleString()}.00</td>
                     </tr>
                     <tr>
                       <td style={{ border: '1px solid #e2e8f0', padding: 8 }}>免抵税额</td>
