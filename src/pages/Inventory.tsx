@@ -10,14 +10,18 @@ const Inventory: React.FC = () => {
   const navigate = useNavigate();
   const { monthlyGenerated, generateMonthlyInventory } = useDemoStore();
   const [generating, setGenerating] = useState(false);
-  const [showSummary, setShowSummary] = useState(false);
+  const [showSummary, setShowSummary] = useState(monthlyGenerated);
 
   const records = buildInitialInventory();
   const summary = computeMonthlySummary(records);
 
-  const totalIn = records.reduce((s, r) => s + r.qtyIn, 0);
+  const normalInbound = records
+    .filter((r) => r.type === '报关入库' || r.type === '其他入库')
+    .reduce((s, r) => s + r.qtyIn, 0);
   const totalReturn = records.filter((r) => r.type === '退货入库').reduce((s, r) => s + r.qtyIn, 0);
   const totalSales = records.filter((r) => r.type === '渠道销售').reduce((s, r) => s + r.qtyOut, 0);
+  const totalLoss = summary.reduce((s, i) => s + i.lossQty, 0);
+  const totalEnd = summary.reduce((s, i) => s + i.endQty, 0);
 
   const handleGenerate = () => {
     setGenerating(true);
@@ -59,11 +63,11 @@ const Inventory: React.FC = () => {
 
       <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
         <KPICard label="SKU数量" value="4" />
-        <KPICard label="本月入库" value={totalIn} />
+        <KPICard label="正常入库" value={normalInbound} />
         <KPICard label="渠道销售" value={totalSales} highlight color="#38a169" />
         <KPICard label="退货" value={totalReturn} color="#d69e2e" />
-        <KPICard label="损耗" value={summary.reduce((s, i) => s + i.lossQty, 0)} color="#e53e3e" />
-        <KPICard label="期末库存" value={summary.reduce((s, i) => s + i.endQty, 0)} highlight />
+        <KPICard label="损耗" value={totalLoss} color="#e53e3e" />
+        <KPICard label="期末库存" value={totalEnd} highlight />
       </div>
 
       <div style={{ display: 'flex', gap: 20, marginBottom: 24 }}>
@@ -100,8 +104,26 @@ const Inventory: React.FC = () => {
                 {generating ? '生成中...' : '生成月末库存明细'}
               </button>
             ) : (
-              <div style={{ fontSize: 13, color: '#48bb78', fontWeight: 500 }}>
-                ✓ 月末明细已生成
+              <div>
+                <div style={{ fontSize: 13, color: '#48bb78', fontWeight: 500, marginBottom: 8 }}>
+                  ✓ 月末明细已生成
+                </div>
+                <button
+                  onClick={() => setShowSummary(!showSummary)}
+                  style={{
+                    width: '100%',
+                    padding: '8px 0',
+                    background: showSummary ? '#ebf8ff' : '#fff',
+                    color: '#2b6cb0',
+                    border: `1px solid ${showSummary ? '#90cdf4' : '#e2e8f0'}`,
+                    borderRadius: 6,
+                    fontSize: 13,
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                  }}
+                >
+                  {showSummary ? '收起月末明细' : '查看月末明细'}
+                </button>
               </div>
             )}
           </div>
@@ -111,11 +133,12 @@ const Inventory: React.FC = () => {
               库存构成
             </h3>
             <div style={{ fontSize: 13, lineHeight: 2 }}>
-              <div>🏢 报关入库 <span style={{ float: 'right', fontWeight: 500 }}>{totalIn}</span></div>
-              <div>📦 渠道销售 <span style={{ float: 'right', fontWeight: 500 }}>-{totalSales}</span></div>
+              <div>🏢 正常入库 <span style={{ float: 'right', fontWeight: 500 }}>{normalInbound}</span></div>
               <div>↩️ 退货入库 <span style={{ float: 'right', fontWeight: 500 }}>+{totalReturn}</span></div>
+              <div>📦 渠道销售 <span style={{ float: 'right', fontWeight: 500 }}>-{totalSales}</span></div>
+              <div>📉 损耗 <span style={{ float: 'right', fontWeight: 500 }}>-{totalLoss}</span></div>
               <div style={{ borderTop: '1px solid #e2e8f0', marginTop: 4, paddingTop: 4, fontWeight: 600 }}>
-                期末结存 <span style={{ float: 'right' }}>{totalIn - totalSales + totalReturn - summary.reduce((s, i) => s + i.lossQty, 0)}</span>
+                期末结存 <span style={{ float: 'right' }}>{totalEnd}</span>
               </div>
             </div>
           </div>
